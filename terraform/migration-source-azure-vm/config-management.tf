@@ -4,18 +4,22 @@ resource "null_resource" "installation_mariadb" {
   }
 
   connection {
-    host        = "${azurerm_public_ip.workload_migration_demo_public_ip.ip_address}"
+    host        = "${azurerm_public_ip.workload_migration_demo_public_ip.fqdn}"
     user        = "${var.vm_username}"
+    type        = "ssh"
     private_key = "${tls_private_key.id_rsa.private_key_pem}"
   }
 
   provisioner "remote-exec" {
-    script = "./scripts/mariadb.sh"
+    script = "./scripts/mariadb-ubuntu.sh"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "mysql -u root -e \"CREATE DATABASE ${local.wp_database_name}\"",
+      "sudo mysql -u root -e \"CREATE DATABASE ${local.wp_database_name}\"",
+      "sudo mysql -u root -e \"CREATE USER '${local.wp_database_user}'@'localhost'\"",
+      "sudo mysql -u root -e \"GRANT ALL PRIVILEGES ON *.* TO '${local.wp_database_user}'@'localhost' WITH GRANT OPTION\"",
+
       "sudo systemctl restart mariadb",
     ]
   }
@@ -35,7 +39,7 @@ resource "null_resource" "installation_wp" {
   }
 
   provisioner "remote-exec" {
-    script = "./scripts/wordpress.sh"
+    script = "./scripts/wp-ubuntu.sh"
   }
 
   provisioner "remote-exec" {
@@ -44,6 +48,7 @@ resource "null_resource" "installation_wp" {
       "cd /var/www/html/",
       "sudo -u ${var.vm_username} /usr/local/bin/wp core download --version=5.1.1",
       "sudo -u ${var.vm_username} /usr/local/bin/wp core config --dbname='${local.wp_database_name}' --dbuser='${local.wp_database_user}'",
+      "sudo -u ${var.vm_username} rm -rf index.html",
     ]
   }
 }

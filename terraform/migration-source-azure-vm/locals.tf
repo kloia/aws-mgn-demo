@@ -17,13 +17,13 @@ locals {
 
 #endregion managed disk
 
-#region platform image
+#region platform image - ubuntu
 
 locals {
-  platform_image_publisher = "openlogic"
-  platform_image_offer     = "centos"
-  platform_image_sku       = "7.6"
-  platform_image_version   = "7.6.20190708"
+  platform_image_publisher = "Canonical"
+  platform_image_offer     = "UbuntuServer"
+  platform_image_sku       = "18.04-LTS"
+  platform_image_version   = "latest"
 }
 
 #endregion platform image
@@ -44,6 +44,7 @@ locals {
   port_http  = "80"
   port_https = "443"
   port_ssh   = "22"
+  port_mgn   = "1500"
 }
 
 locals {
@@ -72,7 +73,7 @@ locals {
 
 locals {
   wp_database_name = "wordpress"
-  wp_database_user = "root"  
+  wp_database_user = "wpdbuser"  
 }
 
 #endregion // wp and mariadb

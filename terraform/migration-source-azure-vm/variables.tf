@@ -20,13 +20,13 @@ variable "vnet_address_prefix" {
   default = "10.0.0.0/16"
 }
 
-variable "default_subnet_name" {
-  default = "default"
+variable "public_subnet_name" {
+  default = "workload-migration-demo-public-subnet-001"
 }
-
-variable "default_subnet_address_prefix" {
+variable "public_subnet_address_prefix" {
   default = "10.0.0.0/24"
 }
+
 
 # endregion // vnet
 
@@ -74,6 +74,10 @@ variable "managed_disk_size_gb" {
 
 variable "public_ip_name" {
   default = "workload-migration-demo-public-ip"
+}
+
+variable "public_ip_fqdn" {
+  default = "migration-workload-demo-fqdn"
 }
 
 #endregion // public ip
